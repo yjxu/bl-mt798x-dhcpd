@@ -27,7 +27,8 @@ BL31_SOURCES		+=	drivers/arm/cci/cci.c				\
 				$(APSOC_COMMON)/bl31/plat_topology.c		\
 				$(APSOC_COMMON)/bl31/mtk_gic_v3.c		\
 				$(APSOC_COMMON)/bl31/plat_pm.c			\
-				$(APSOC_COMMON)/drivers/trng/v$(MT7986_TRNG_VERSION)/rng.c	\
+				$(APSOC_COMMON)/drivers/trng/v1/trng.c		\
+				$(MTK_PLAT)/drivers/rng/rng.c			\
 				$(MTK_PLAT_SOC)/aarch64/plat_helpers.S		\
 				$(MTK_PLAT_SOC)/aarch64/platform_common.c	\
 				$(MTK_PLAT_SOC)/bl31/bl31_plat_setup.c		\
@@ -52,6 +53,10 @@ endif
 
 ifeq ($(ENABLE_BL31_RUNTIME_LOG), 1)
 BL31_CPPFLAGS		+=	-DENABLE_BL31_RUNTIME_LOG
+endif
+
+ifeq ($(MT7986_TRNG_NS_ACCESS), 1)
+BL31_CPPFLAGS		+=	-DMT7986_TRNG_NS_ACCESS
 endif
 
 MTK_SIP_KERNEL_BOOT_ENABLE := 1
