@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+// SPDX-License-Identifier: GPL-2.0
 
 /dts-v1/;
 #include "mt7981.dtsi"
@@ -7,8 +7,8 @@
 / {
 	#address-cells = <1>;
 	#size-cells = <1>;
-	model = "mt7981-tplink_wma301v2";
-	compatible = "mediatek,mt7981", "mediatek,mt7981-rfb";
+	model = "mt7986-ruijie-ew-6000gx-pro";
+	compatible = "mediatek,mt7986", "mediatek,mt7986-rfb";
 
 	chosen {
 		stdout-path = &uart0;
@@ -24,53 +24,59 @@
 	mtd-layout {
 		layout@0 {
 			label = "default";
-			// mtd layout immortalwrt/openwrt 114M ubi firmware
-			mtdids = "nmbm0=nmbm0";
-			mtdparts = "nmbm0:1024k(bl2),512k(u-boot-env),1024k(art),1024k(Factory),2048k(fip),116736k(ubi)";
+			cmdline = "console=ttyS0,115200n8 earlycon=uart8250,mmio32,0x11002000";
+			mtdids = "spi-nand0=spi-nand0";
+			mtdparts = "spi-nand0:1024k(bl2),512k(u-boot-env),2048k(Factory),2048k(fip),512k(product_info),512k(kdump),64512k(ubi)";
 		};
 
 		layout@1 {
-			label = "stock";
-			// mtd layout for stock layout firmware
-			mtdids = "nmbm0=nmbm0";
-			mtdparts = "nmbm0:1024k(bl2),512k(u-boot-env),1024k(art),1024k(Factory),2048k(fip),65536k(ubi)";
-		};
-
-		layout@2 {
-			label = "256m";
-			// mtd layout for 256m nand firmware
-			mtdids = "nmbm0=nmbm0";
-			mtdparts = "nmbm0:1024k(bl2),512k(u-boot-env),1024k(art),1024k(Factory),2048k(fip),235520k(ubi)";
+			label = "ubi-107m";
+			mtdids = "spi-nand0=spi-nand0";
+			mtdparts = "spi-nand0:1024k(bl2),512k(u-boot-env),2048k(Factory),2048k(fip),512k(product_info),512k(kdump),109568k(ubi)";
 		};
 	};
 
 	gpio-keys {
 		compatible = "gpio-keys";
 
-		button-reset {
+		reset-button {
 			label = "reset";
 			linux,code = <KEY_RESTART>;
 			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
 		};
 
-		button-mesh {
+		mesh-button {
 			label = "mesh";
 			linux,code = <BTN_9>;
-			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
+			gpios = <&pio 15 GPIO_ACTIVE_LOW>;
 		};
 	};
 
 	leds {
 		compatible = "gpio-leds";
 
-		status_red_led: led-0 {
-			label = "red:status";
-			gpios = <&pio 14 GPIO_ACTIVE_LOW>;
+		led-0 {
+			label = "meshled:status";
+			gpios = <&pio 22 GPIO_ACTIVE_LOW>;
+			default-state = "off";
 		};
 
-		status_green_led: led-1 {
+		led-1 {
+			label = "red:status";
+			gpios = <&pio 10 GPIO_ACTIVE_LOW>;
+			default-state = "off";
+		};
+
+		led-2 {
 			label = "green:status";
-			gpios = <&pio 15 GPIO_ACTIVE_LOW>;
+			gpios = <&pio 9 GPIO_ACTIVE_LOW>;
+			default-state = "off";
+		};
+
+		led-3 {
+			label = "blue:status";
+			gpios = <&pio 11 GPIO_ACTIVE_LOW>;
+			default-state = "off";
 		};
 	};
 

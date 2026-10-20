@@ -7,7 +7,7 @@
 / {
 	#address-cells = <1>;
 	#size-cells = <1>;
-	model = "mt7981-kst-wf3000a";
+	model = "mt7981-newland_nl-wr8103";
 	compatible = "mediatek,mt7981", "mediatek,mt7981-rfb";
 
 	chosen {
@@ -19,21 +19,29 @@
 		bootcmd = "mtkboardboot";
 		blink_led = "red:status";
 		system_led = "green:status";
+
+		environment {
+			bootconf = "config@ruijie_x60_gsw_en8811h_phy";
+		};
+	};
+
+	memory@40000000 {
+		device_type = "memory";
+		reg = <0x40000000 0x20000000>;
 	};
 
 	mtd-layout {
 		layout@0 {
 			label = "default";
-			// mtd layout for stock 48m ubi firmware
-			mtdids = "nmbm0=nmbm0";
-			mtdparts = "nmbm0:1024k(bl2),512k(u-boot-env),2048k(factory),2048k(fip),49152k(ubi),49152k(ubi1)";
+			cmdline = "console=ttyS0,115200n8 earlycon=uart8250,mmio32,0x11002000";
+			mtdids = "spi-nand0=spi-nand0";
+			mtdparts = "spi-nand0:1024k(bl2),512k(u-boot-env),2048k(Factory),2048k(fip),512k(product_info),512k(kdump),64512k(ubi)";
 		};
 
 		layout@1 {
-			label = "expand(114m)";
-			// mtd layout for 114m ubi firmware
-			mtdids = "nmbm0=nmbm0";
-			mtdparts = "nmbm0:1024k(bl2),512k(u-boot-env),2048k(factory),2048k(fip),116736k(ubi)";
+			label = "ubi-107m";
+			mtdids = "spi-nand0=spi-nand0";
+			mtdparts = "spi-nand0:1024k(bl2),512k(u-boot-env),2048k(Factory),2048k(fip),512k(product_info),512k(kdump),109568k(ubi)";
 		};
 
 	};
@@ -44,32 +52,36 @@
 		button-reset {
 			label = "reset";
 			linux,code = <KEY_RESTART>;
-			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
 		};
 
-		button-wps {
-			label = "wps";
-			linux,code = <KEY_WPS_BUTTON>;
-			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
+		mesh-button {
+			label = "mesh";
+			gpios = <&pio 15 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RIGHTALT>;
 		};
 	};
 
 	leds {
 		compatible = "gpio-leds";
 
-		led-0 {
+		red_led: led-0 {
 			label = "red:status";
 			gpios = <&pio 10 GPIO_ACTIVE_LOW>;
 		};
 
-		led-1 {
+		green_led: led-1 {
 			label = "green:status";
+			gpios = <&pio 9 GPIO_ACTIVE_LOW>;
+		};
+
+		blue_led: led-2 {
+			label = "blue:status";
 			gpios = <&pio 11 GPIO_ACTIVE_LOW>;
 		};
 
-		led-2 {
-			label = "blue:status";
-			gpios = <&pio 12 GPIO_ACTIVE_LOW>;
+		mesh_led: led-3 {
+			label = "mesh:status";
+			gpios = <&pio 22 GPIO_ACTIVE_LOW>;
 		};
 	};
 	memory@40000000 {
